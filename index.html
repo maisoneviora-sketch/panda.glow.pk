@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PandaGlow – Cute Lamps</title>
+<style>
+:root{--bg:#fff8ee;--card:#fff;--pink:#f8c8d4;--beige:#ead9c3;--brown:#4a2e22;--muted:#8a6f60;--accent:#e58aa2;--shadow:0 6px 20px rgba(74,46,34,.1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1d17;--card:#3a2a22;--pink:#7a4a58;--beige:#54402f;--brown:#fbeee0;--muted:#cdb6a3;--accent:#f09ab2}}
+:root[data-theme="dark"]{--bg:#2a1d17;--card:#3a2a22;--pink:#7a4a58;--beige:#54402f;--brown:#fbeee0;--muted:#cdb6a3;--accent:#f09ab2}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--brown);font:16px/1.5 Georgia,'Times New Roman',serif}
+h1,h2,h3{font-family:'Trebuchet MS',system-ui,sans-serif;margin:.3em 0}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:auto;padding:16px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);box-shadow:var(--shadow);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+nav .logo{font:700 20px 'Trebuchet MS',sans-serif;cursor:pointer;margin-right:auto}
+nav a,.btn{cursor:pointer;text-decoration:none}
+nav a{padding:6px 8px;border-radius:10px;color:var(--brown)}nav a:hover{background:var(--pink)}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 20px;font-weight:700;transition:.2s;display:inline-block}
+.btn:hover{transform:translateY(-2px)}.btn.alt{background:var(--beige);color:var(--brown)}.btn.sm{padding:6px 14px;font-size:14px}
+.hero{display:grid;gap:20px;align-items:center;background:linear-gradient(135deg,var(--pink),var(--beige));border-radius:28px;padding:24px;margin:16px 0}
+@media(min-width:720px){.hero{grid-template-columns:1fr 1fr;padding:40px}}
+.hero img{width:100%;max-width:340px;margin:auto;display:block;animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}@keyframes loadbar{from{transform:translateX(-35%)}to{transform:translateX(130%)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:12px;position:relative}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;background:var(--beige);cursor:pointer}
+.price s{color:var(--muted);margin-left:6px;font-size:14px}.price b{color:var(--accent)}
+.tag{font-size:12px;background:var(--pink);border-radius:999px;padding:2px 8px;display:inline-block}
+.heart{position:absolute;top:18px;right:18px;background:var(--card);border:0;border-radius:50%;width:34px;height:34px;cursor:pointer}
+input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid var(--beige);background:var(--card);margin:4px 0 10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1;min-width:130px}
+.note{background:var(--beige);border-radius:14px;padding:10px 14px;font-size:14px}
+table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid var(--beige);text-align:left}
+.tbl{overflow-x:auto}
+#toast{max-width:min(92vw,520px);width:max-content;text-align:center;position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--brown);color:var(--bg);padding:10px 18px;border-radius:20px;opacity:0;pointer-events:none;transition:.3s;z-index:9}
+#toast.on{opacity:1}
+footer{background:var(--card);margin-top:30px;padding:20px 16px;font-size:14px}
+.two{display:grid;gap:20px}@media(min-width:720px){.two{grid-template-columns:1fr 1fr}}
+.thumbs{display:flex;gap:8px;margin-top:8px}.thumbs img{width:56px;height:56px;border-radius:10px;cursor:pointer;object-fit:cover}
+.order{background:linear-gradient(135deg,#e58aa2,#c96b86)}.acts{display:flex;gap:6px;flex-wrap:wrap}.err{color:#c0392b;font-size:13px;margin:-6px 0 8px}.opt{color:var(--muted);font-size:13px}.pv{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.pv div{position:relative}.pv img{width:70px;height:70px;object-fit:cover;border-radius:10px}.pv button{position:absolute;top:-6px;right:-6px;border:0;border-radius:50%;width:24px;height:24px;background:var(--brown);color:var(--bg);cursor:pointer}.tabs{display:flex;gap:8px;margin:10px 0}.mini{width:40px;height:40px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:6px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+/* ===== PandaGlow AI chatbot (additive; uses the site's CSS variables) ===== */
+.pgc-fab{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:8;width:60px;height:60px;border-radius:50%;border:0;background:var(--accent);box-shadow:var(--shadow);cursor:pointer;display:grid;place-items:center;transition:transform .2s}
+.pgc-fab:hover{transform:scale(1.06)}
+.pgc-fab::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--accent);animation:pgcPing 2.2s ease-out 1.5s 3;pointer-events:none}
+@keyframes pgcPing{from{transform:scale(1);opacity:.7}to{transform:scale(1.6);opacity:0}}
+.pgc-hint{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(max(16px,env(safe-area-inset-bottom)) + 70px);z-index:8;background:var(--card);color:var(--brown);border-radius:16px 16px 4px 16px;box-shadow:var(--shadow);padding:8px 28px 8px 12px;font:14px system-ui,sans-serif;max-width:220px;display:none}
+.pgc-hint.on{display:block}.pgc-hint button{position:absolute;top:2px;right:4px;border:0;background:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px}
+.pgc-win{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(max(16px,env(safe-area-inset-bottom)) + 74px);width:380px;height:min(600px,calc(var(--pgc-vh,100vh) - 110px));display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--beige);border-radius:24px;box-shadow:0 18px 50px rgba(74,46,34,.28);z-index:10;overflow:hidden;font:15px/1.45 system-ui,sans-serif;opacity:0;transform:translateY(14px) scale(.97);visibility:hidden;pointer-events:none;transition:opacity .2s,transform .2s,visibility .2s}
+.pgc-win.on{opacity:1;transform:none;visibility:visible;pointer-events:auto}
+.pgc-head{display:flex;align-items:center;gap:10px;padding:10px 12px;background:linear-gradient(135deg,var(--pink),var(--beige))}
+.pgc-head svg{width:38px;height:38px;flex:none;background:var(--card);border-radius:50%}
+.pgc-head div{flex:1;min-width:0;line-height:1.2}.pgc-head b{font-family:'Trebuchet MS',system-ui,sans-serif}.pgc-head small{display:block;color:var(--muted)}
+.pgc-head small::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:#3aa76d;margin-right:5px}
+.pgc-head button,.pgc-send{border:0;cursor:pointer;background:transparent;min-width:36px;min-height:36px;border-radius:50%;font-size:18px}
+.pgc-head button:hover{background:rgba(255,255,255,.4)}
+.pgc-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;overscroll-behavior:contain}
+.pgc-m{max-width:86%;padding:9px 13px;border-radius:18px;white-space:pre-wrap;overflow-wrap:anywhere}
+.pgc-m time{display:block;font-size:11px;opacity:.65;margin-top:2px}
+.pgc-m.u{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:6px}
+.pgc-m.b{align-self:flex-start;background:var(--card);box-shadow:var(--shadow);border-bottom-left-radius:6px}
+.pgc-m.e{align-self:flex-start;background:var(--beige);border-bottom-left-radius:6px}
+.pgc-chips{display:flex;flex-wrap:wrap;gap:6px}.pgc-chips button,.pgc-act button{border:1px solid var(--accent);background:var(--card);color:var(--brown);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px}
+.pgc-act{background:var(--card);border:1px dashed var(--accent);border-radius:16px;padding:10px;align-self:stretch}.pgc-act p{margin:0 0 8px}.pgc-act button:first-of-type{background:var(--accent);color:#fff;margin-right:6px}.pgc-act button:disabled{opacity:.5;cursor:default}
+.pgc-cards{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 6px;align-self:stretch}
+.pgc-c{flex:0 0 150px;scroll-snap-align:start;background:var(--card);border-radius:16px;padding:8px;box-shadow:var(--shadow);font-size:13px}
+.pgc-c img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:var(--beige)}.pgc-c b{display:block;margin:4px 0 2px;line-height:1.25}.pgc-c s{color:var(--muted);margin-left:4px}.pgc-c small{color:var(--muted)}
+.pgc-c div{display:flex;gap:4px;margin-top:6px}.pgc-c button{flex:1;border:0;border-radius:999px;padding:6px 4px;cursor:pointer;background:var(--beige);color:var(--brown);font-size:12px}.pgc-c button.p{background:var(--accent);color:#fff}.pgc-c button:disabled{opacity:.45;cursor:default}
+.pgc-dots{align-self:flex-start;background:var(--card);box-shadow:var(--shadow);border-radius:18px;padding:12px 14px;display:flex;gap:4px}.pgc-dots i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:pgcDot 1s infinite}.pgc-dots i:nth-child(2){animation-delay:.15s}.pgc-dots i:nth-child(3){animation-delay:.3s}
+@keyframes pgcDot{50%{transform:translateY(-4px);opacity:.5}}
+.pgc-form{display:flex;gap:6px;align-items:flex-end;padding:8px 10px;border-top:1px solid var(--beige);background:var(--card)}
+.pgc-win textarea{flex:1;margin:0;resize:none;max-height:110px;border-radius:18px;padding:9px 12px}
+.pgc-send{background:var(--accent);color:#fff;width:42px;height:42px}.pgc-send:disabled{opacity:.5;cursor:default}
+.pgc-note{font-size:11px;color:var(--muted);text-align:center;padding:0 10px 6px;background:var(--card)}
+@media(max-width:600px){.pgc-win{left:8px;right:8px;width:auto;bottom:max(8px,env(safe-area-inset-bottom));height:min(82vh,calc(var(--pgc-vh,100vh) - 16px))}.pgc-open .pgc-fab{display:none}.pgc-win textarea{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.pgc-fab::after,.pgc-dots i{animation:none}.pgc-win,.pgc-fab{transition:none}.pgc-log{scroll-behavior:auto}}
+</style></head><body>
+<nav id="nav"></nav><main class="wrap" id="app" aria-live="polite"></main>
+<footer id="foot"></footer><div id="toast" role="status"></div>
+<script>
+/* ===== CONFIG: rename the store or set your hero photo here ===== */
+const BRAND={name:'PandaGlow',tagline:'A Little Glow, A Lot of Cuteness ✨',heroImage:'' /* put your panda lamp image URL or data URI */,
+ delivery:{fee:100,freeOver:5000}};
+/* Password-only storefront admin gate. Note: a password stored in client HTML is not secure authentication. */
+const ADMIN_PASSWORD='Muhammad 28';
+/* ===== DATA LAYER: swap this object for Firebase later (same method names) ===== */
+const lampSVG=(c1,c2)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#fff3e4"/><circle cx="55" cy="62" r="20" fill="#4a2e22"/><circle cx="145" cy="62" r="20" fill="#4a2e22"/><ellipse cx="100" cy="110" rx="62" ry="58" fill="${c1}"/><ellipse cx="78" cy="102" rx="14" ry="18" fill="#4a2e22"/><ellipse cx="122" cy="102" rx="14" ry="18" fill="#4a2e22"/><circle cx="80" cy="98" r="4" fill="#fff"/><circle cx="124" cy="98" r="4" fill="#fff"/><ellipse cx="100" cy="124" rx="7" ry="5" fill="#4a2e22"/><circle cx="62" cy="125" r="8" fill="${c2}" opacity=".7"/><circle cx="138" cy="125" r="8" fill="${c2}" opacity=".7"/><rect x="70" y="165" width="60" height="14" rx="7" fill="#4a2e22"/></svg>`);
+const SAMPLE=[]; // No sample products are displayed.
+/* Firebase web config (public identifiers, safe in frontend). Fill from Firebase Console > Project settings > Your apps. */
+const FIREBASE_CONFIG={apiKey:'AIzaSyBPG0JOMwAcjGkPKXE0VQFys7r7OM6y5-w',authDomain:'pandaglow-34a7a.firebaseapp.com',projectId:'pandaglow-34a7a',storageBucket:'pandaglow-34a7a.firebasestorage.app',messagingSenderId:'794452995805',appId:'1:794452995805:web:5197794c0f8243af85f534'};
+const cfgOK=!!(FIREBASE_CONFIG.apiKey&&FIREBASE_CONFIG.projectId&&FIREBASE_CONFIG.appId);let FB=null,PEND=null;
+let AD={user:null,ok:false,tab:'products',orders:[],form:null,busy:false,err:'',email:''};
+const norm=p=>{const im=p.images&&p.images.length?p.images:p.img?[p.img]:[];return{colors:[],badge:'',cat:'Lamp',desc:'',stock:0,price:0,disc:0,...p,images:im,img:im[0]||lampSVG('#fff','#f8c8d4')}};
+const DB={mode:cfgOK?'firebase':'demo',
+ async init(){if(FB)return FB;if(!cfgOK)throw new Error('Firebase configuration is incomplete');const u=m=>import('https://www.gstatic.com/firebasejs/10.12.2/firebase-'+m+'.js');const[a,fs]=await Promise.all([u('app'),u('firestore')]);let app;try{app=a.getApp()}catch{app=a.initializeApp(FIREBASE_CONFIG)}
+  /* auto long-polling fixes writes that hang forever on networks that block Firestore's default streaming connection */
+  let db;try{db=fs.initializeFirestore(app,{experimentalAutoDetectLongPolling:true})}catch{db=fs.getFirestore(app)}
+  FB={...fs,db,app,store:null,noStore:false};return FB;},
+ /* Firebase Authentication: the admin signs in with a real Firebase account so Firestore/Storage rules can recognise them */
+ async loadAuth(){if(FB.auth)return FB.auth;const au=await tmo(import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),12000,'Could not load Firebase sign-in. Check your internet connection.');Object.assign(FB,{signIn:au.signInWithEmailAndPassword,signInAnon:au.signInAnonymously,signOut:au.signOut,onAuthStateChanged:au.onAuthStateChanged});FB.auth=au.getAuth(FB.app);return FB.auth},
+ async loadStorage(){if(FB.store)return FB.store;if(FB.noStore||!FIREBASE_CONFIG.storageBucket)return null;try{const st=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js');Object.assign(FB,{ref:st.ref,uploadString:st.uploadString,getDownloadURL:st.getDownloadURL});FB.store=st.getStorage(FB.app);FB.store.maxUploadRetryTime=12000;FB.store.maxOperationRetryTime=12000}catch(e){FB.noStore=true;FB.store=null}return FB.store},
+ async products(){if(!FB||!FB.db)return null;try{const q=await tmo(FB.getDocs(FB.collection(FB.db,'products')),12000,'Product loading timed out');const r=q.docs.map(d=>norm({id:d.id,...d.data()}));r.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));cacheP(r);return r}catch(e){console.warn('Firebase products could not be read. Check Firestore setup/rules and hosting.',e);return null} },
+ async placeOrder(o){
+  if(!cfgOK||this.mode==='demo')throw new Error('The store database is not configured, so this order was not saved.');
+  /* Finish Firebase initialization even if a customer reaches checkout before page startup completes. */
+  if(!FB)await tmo(this.init(),15000,'Firebase is taking too long to start. Please try again.');
+  /* Customers need a Firebase session if Firestore rules require authentication. */
+  await this.loadAuth();
+  if(!FB.auth.currentUser)await tmo(FB.signInAnon(FB.auth),12000,'Could not start an order session. Enable Anonymous sign-in in Firebase Authentication.');
+  const retry=!!PEND,id=PEND||(PEND='PG-'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase());
+  try{await tmo(FB.setDoc(FB.doc(FB.db,'orders',id),{...o,orderNo:id,status:'Pending',createdAt:FB.serverTimestamp()}),20000,'Firebase did not respond within 20 seconds. Check your connection and try again.');}
+  catch(e){
+   if(e&&e.code==='permission-denied')throw new Error('Firebase blocked this order because of Firestore security rules. The orders collection must allow signed-in customers to create orders.');
+   if(e&&e.code==='unauthenticated')throw new Error('The Firebase order session expired. Please press Place Order again.');
+   if(e&&e.code==='unavailable')throw new Error('Firebase is temporarily unavailable. Please try again in a moment.');
+   throw e;
+  }
+  PEND=null;return{id,saved:true}
+ }};
+async function probe(){try{await FB.getDocs(FB.query(FB.collection(FB.db,'orders'),FB.limit(1)));return true}catch{return false}}
+/* ===== STATE ===== */
+const ls={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const tmo=(p,ms,msg)=>{let t;return Promise.race([p,new Promise((_,j)=>{t=setTimeout(()=>j(new Error(msg||'timeout')),ms)})]).finally(()=>clearTimeout(t))};
+const cacheP=r=>ls.set('pg_pcache',r.map(({createdAt,updatedAt,img,...x})=>x));
+let P=[],cart=ls.get('pg_cart',[]),wish=ls.get('pg_wish',[]),Q={q:'',cat:'All',sort:''};
+const $=s=>document.querySelector(s),pkr=n=>'₨ '+Number(n).toLocaleString('en-PK');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hasP=p=>p.price>0,ok=p=>hasP(p)&&p.stock>0;
+const eff=p=>p.disc&&p.disc<p.price?p.disc:p.price;
+function toast(m,ms=2200){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),ms)}
+function save(){ls.set('pg_cart',cart);ls.set('pg_wish',wish);nav()}
+function add(id,color,qty=1){const p=P.find(x=>x.id==id);if(!p||!ok(p))return toast('Sorry, this lamp is unavailable');color=color||p.colors[0]||'';const i=cart.find(c=>c.id==id&&c.color==color);if(i)i.qty=Math.min(p.stock,i.qty+qty);else cart.push({id,color,qty:Math.min(p.stock,qty)});save();toast('Added to cart 🐼')}
+let NOW=ls.get('pg_now',[]);
+function buy(id,color,qty=1){const p=P.find(x=>x.id==id);if(!p||!ok(p))return toast('Sorry, this lamp is unavailable');NOW=[{id,color:color||p.colors[0]||'',qty:Math.min(p.stock,qty)}];ls.set('pg_now',NOW);location.hash='#/checkout/now'}
+function wishT(id){wish=wish.includes(id)?wish.filter(x=>x!=id):[...wish,id];save();route()}
+/* ===== COMPONENTS ===== */
+function nav(){$('#nav').innerHTML=`<span class="logo" onclick="location.hash=''">🐼 ${esc(BRAND.name)}</span><a href="#/">Home</a><a href="#/shop">Shop</a><a href="#/about">About</a><a href="#/wishlist" aria-label="Wishlist">♡ ${wish.length}</a><a href="#/cart" aria-label="Cart">🛒 ${cart.reduce((a,c)=>a+c.qty,0)}</a><a class="btn sm alt" href="#/admin">Admin</a>`}
+function card(p){const off=hasP(p)&&p.disc&&p.disc<p.price,d=ok(p)?'':'disabled style="opacity:.5"';return `<div class="card"><button class="heart" aria-label="Wishlist" onclick="wishT('${p.id}')">${wish.includes(p.id)?'♥':'♡'}</button><img src="${p.img}" alt="${esc(p.name)}" loading="lazy" onclick="location.hash='#/p/${p.id}'"><h3 style="font-size:16px">${esc(p.name)}</h3><div class="price">${hasP(p)?`<b>${pkr(eff(p))}</b>${off?`<s>${pkr(p.price)}</s>`:''}`:'<b>Price not set</b>'}</div><span class="tag">${!hasP(p)?'Unavailable':p.stock>0?'In stock':'Out of stock'}</span><p class="acts"><button class="btn sm" ${d} onclick="add('${p.id}')">Add to Cart</button><button class="btn sm order" ${d} onclick="buy('${p.id}')">🛍️ Order Now</button></p></div>`}
+function foot(){$('#foot').innerHTML=`<div class="wrap"><b>${esc(BRAND.name)}</b><p><b>FAQs</b> – How long is delivery? Add your own answer.</p><p><b>Shipping</b> – Delivery fee ${pkr(BRAND.delivery.fee)}, free over ${pkr(BRAND.delivery.freeOver)}.</p><p><b>Returns</b> – Add your return policy here.</p></div>`}
+function lines(items){return items.map(c=>({c,p:P.find(x=>x.id==c.id)})).filter(l=>l.p&&ok(l.p))}
+function totals(items=cart){const sub=lines(items).reduce((a,{c,p})=>a+eff(p)*c.qty,0);const del=!sub||sub>=BRAND.delivery.freeOver?0:BRAND.delivery.fee;return{sub,del,total:sub+del}}
+/* ===== PAGES ===== */
+const pages={
+home(){const best=P.filter(p=>p.badge=='best'),nw=P.filter(p=>p.badge=='new');return `<section class="hero"><div><h1 style="font-size:clamp(28px,6vw,46px)">${BRAND.tagline}</h1><p>Bring cozy vibes and adorable lighting into your everyday life.</p><a class="btn" href="#/shop">Shop Now</a></div><img src="${esc(BRAND.heroImage||P[0]?.img||lampSVG('#fff','#f8c8d4'))}" alt="Panda lamp"></section>
+<h2>Featured</h2><div class="grid">${P.slice(0,4).map(card).join('')}</div><h2>Best Sellers</h2><div class="grid">${best.map(card).join('')}</div><h2>New Arrivals</h2><div class="grid">${nw.map(card).join('')}</div>
+<section class="hero" style="text-align:center;display:block"><h2>Make Your Room Magical ✨</h2><p>Soft light, sweet shapes, instant cozy.</p><a class="btn alt" href="#/shop">Explore lamps</a></section>
+`},
+shop(){const cats=['All',...new Set(P.map(p=>p.cat))];let l=P.filter(p=>(Q.cat=='All'||p.cat==Q.cat)&&p.name.toLowerCase().includes(Q.q.toLowerCase()));if(Q.sort=='asc')l.sort((a,b)=>eff(a)-eff(b));if(Q.sort=='desc')l.sort((a,b)=>eff(b)-eff(a));
+return `<h1>Shop</h1><div class="row"><input id="q" placeholder="Search lamps…" aria-label="Search" value="${esc(Q.q)}"><select id="cat" aria-label="Category">${cats.map(c=>`<option ${c==Q.cat?'selected':''}>${c}</option>`).join('')}</select><select id="sort" aria-label="Sort"><option value="">Sort by price</option><option value="asc" ${Q.sort=='asc'?'selected':''}>Low → High</option><option value="desc" ${Q.sort=='desc'?'selected':''}>High → Low</option></select></div>${l.length?`<div class="grid">${l.map(card).join('')}</div>`:'<p>No lamps match. Try another search 🐼</p>'}`},
+wishlist(){const l=P.filter(p=>wish.includes(p.id));return `<h1>Wishlist</h1>${l.length?`<div class="grid">${l.map(card).join('')}</div>`:'<p>Your wishlist is empty.</p>'}`},
+p(id){const p=P.find(x=>x.id==id);if(!p)return '<p>Product not found.</p>';return `<div class="two"><div><img id="big" src="${p.img}" alt="${esc(p.name)}" style="width:100%;border-radius:20px"><div class="thumbs">${p.images.map(s=>`<img src="${s}" alt="" onclick="$('#big').src=this.src">`).join('')}</div></div><div><h1>${esc(p.name)}</h1><div class="price">${hasP(p)?`<b>${pkr(eff(p))}</b>${p.disc&&p.disc<p.price?`<s>${pkr(p.price)}</s>`:''}`:'<b>Price not set</b>'}</div><span class="tag">${!hasP(p)?'Unavailable until a price is set':p.stock>0?p.stock+' in stock':'Out of stock'}</span><p>${esc(p.desc)}</p><label>Color<select id="col">${p.colors.map(c=>`<option>${esc(c)}</option>`).join('')}</select></label><label>Quantity<input id="qty" type="number" min="1" max="${Math.max(1,p.stock)}" value="1"></label><p class="acts"><button class="btn" ${ok(p)?'':'disabled'} onclick="add('${p.id}',$('#col').value,Math.max(1,+$('#qty').value||1))">Add to Cart</button><button class="btn order" ${ok(p)?'':'disabled'} onclick="buy('${p.id}',$('#col').value,Math.max(1,+$('#qty').value||1))">🛍️ Order Now</button></p></div></div>`},
+cart(){if(!cart.length)return '<h1>Cart</h1><p>Your cart is empty 🛒</p><a class="btn" href="#/shop">Start shopping</a>';const t=totals();return `<h1>Cart</h1>${cart.map((c,i)=>{const p=P.find(x=>x.id==c.id);return p?`<div class="card row" style="margin:8px 0"><img src="${p.img}" alt="" style="max-width:70px;border-radius:10px"><div>${esc(p.name)}<br><small>${esc(c.color)} · ${pkr(eff(p))}</small></div><input type="number" min="1" max="${p.stock}" value="${c.qty}" aria-label="Quantity" onchange="cart[${i}].qty=Math.min(${p.stock},Math.max(1,+this.value||1));save();route()"><button class="btn sm alt" onclick="cart.splice(${i},1);save();route()">Remove</button></div>`:`<div class="card row" style="margin:8px 0"><div>This lamp is no longer available.</div><button class="btn sm alt" onclick="cart.splice(${i},1);save();route()">Remove</button></div>`}).join('')}<p>Subtotal: ${pkr(t.sub)}<br>Delivery: ${t.del?pkr(t.del):'Free'}<br><b>Total: ${pkr(t.total)}</b></p><a class="btn" href="#/checkout">Checkout</a>`},
+checkout(arg){const now=arg=='now',L=lines(now?NOW:cart);if(!L.length)return now?'<h1>Checkout</h1><p>That lamp is unavailable.</p><a class="btn" href="#/shop">Back to shop</a>':pages.cart();const t=totals(now?NOW:cart);
+const f=(i,l,x='',o)=>`<label>${l} ${o?'<span class="opt">(optional)</span>':''}<input id="${i}" ${x}></label><div class="err" id="e_${i}"></div>`;
+return `<h1>Checkout</h1><div class="note">Payment: Cash on Delivery.${DB.mode=='demo'?' <b>Demo mode:</b> no database is connected, so orders are not saved yet.':''}</div><div class="two"><div>${f('n','Full name *','autocomplete="name"')}${f('ph','Phone number *','type="tel" autocomplete="tel" placeholder="03XXXXXXXXX"')}${f('hn','House number *')}${f('st','Street or area *')}${f('ct','City *','autocomplete="address-level2"')}<label>Complete delivery address *<textarea id="ad" rows="3"></textarea></label><div class="err" id="e_ad"></div>${f('pc','Postal code','inputmode="numeric"',1)}${f('em','Email address','type="email" autocomplete="email"',1)}<p id="err" style="color:#c0392b"></p><button class="btn" id="go" onclick="place('${arg||''}')">Place Order (COD)</button></div><div class="card"><b>Order summary</b>${L.map(({c,p})=>`<p><img class="mini" src="${p.img}" alt="">${esc(p.name)}${c.color?' ('+esc(c.color)+')':''}<br>${c.qty} × ${pkr(eff(p))} = ${pkr(eff(p)*c.qty)}</p>`).join('')}<p>Subtotal: ${pkr(t.sub)}<br>Delivery fee: ${t.del?pkr(t.del):'Free'}<br><b>Total: ${pkr(t.total)}</b></p></div></div>`},
+confirm(){const o=ls.get('pg_last');if(!o)return '<p>No order to show.</p>';return `<h1>${o.saved?'Order received 🎉':'Order preview'}</h1><p class="note">${o.saved?'Your order has been saved.':'<b>Demo mode:</b> this order was NOT saved or sent to the store. Connect Firebase to take real orders.'}</p><p>Reference: ${esc(o.id)}<br>Name: ${esc(o.name)}<br>Total: ${pkr(o.total)}</p><a class="btn" href="#/shop">Keep shopping</a>`},
+about(){return `<h1>About ${esc(BRAND.name)}</h1><p>We make cozy rooms cuter, one little glow at a time. (Edit this text with your real story.)</p>`},
+admin(){if(!AD.ok)return `<h1>Admin Login</h1><div class="card" style="max-width:380px"><label>Admin password<input id="ap" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')login()" placeholder="Enter admin password"></label><p class="err" style="margin:0 0 8px">${esc(AD.err)}</p><button class="btn" id="lbtn" onclick="login()" ${AD.busy?'disabled':''}>Login</button></div>`;
+const F=AD.form,fi=(k,l,x='')=>`<label>${l}<input ${x} value="${esc(F[k]??'')}" oninput="AD.form.${k}=this.value"></label>`;
+const prod=F?`<div class="card"><h3>${F.id?'Edit':'Add'} lamp</h3>${fi('name','Title')}<label>Description<textarea rows="3" oninput="AD.form.desc=this.value">${esc(F.desc)}</textarea></label><div class="row">${fi('price','Price (PKR)','type="number" min="0"')}${fi('disc','Discount price (optional)','type="number" min="0"')}${fi('stock','Stock','type="number" min="0"')}</div><div class="row">${fi('cat','Category')}${fi('colors','Colors (comma separated)')}<label>Badge<select onchange="AD.form.badge=this.value"><option value="">None</option><option value="best" ${F.badge=='best'?'selected':''}>Best seller</option><option value="new" ${F.badge=='new'?'selected':''}>New</option></select></label></div><b>Pictures (preview)</b><div class="pv">${F.images.map((m,i)=>`<div><img src="${m}" alt=""><button aria-label="Remove picture" onclick="AD.form.images.splice(${i},1);route()">✕</button></div>`).join('')||'<small>No pictures yet</small>'}</div><label class="btn sm alt">Upload / add pictures<input type="file" accept="image/*" multiple hidden onchange="addImgs(this.files)"></label><p class="err" id="perr"></p><p class="acts"><button class="btn" id="sbtn" onclick="saveProd()" ${AD.busy?'disabled':''}>${AD.busy?'Saving…':'Save'}</button><button class="btn alt" onclick="AD.form=null;route()">Cancel</button></p></div>`:'';
+const sc=(n,l)=>`<div class="card" style="text-align:center"><b style="font-size:24px">${n}</b><br><small>${l}</small></div>`,stats=`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr));margin-bottom:12px">${sc(P.length,'Products')}${sc(P.filter(p=>p.stock<1).length,'Out of stock')}${sc(AD.orders.length,'Orders loaded')}${sc(AD.orders.filter(o=>o.status=='Pending').length,'Pending')}</div>`;
+const pl=`${stats}<button class="btn sm" onclick="AD.form={name:'',desc:'',price:'',disc:'',stock:0,cat:'Lamp',colors:'',badge:'',images:[]};route()">+ Add lamp</button>${prod}<div class="tbl"><table>${P.map(p=>`<tr><td><img class="mini" src="${p.img}" alt="">${esc(p.name)}</td><td>${hasP(p)?pkr(p.price)+(p.disc?' / '+pkr(p.disc):''):'No price'}</td><td>${p.stock}</td><td><button class="btn sm alt" onclick="editProd('${p.id}')">Edit</button> <button class="btn sm alt" onclick="delProd('${p.id}')">Delete</button></td></tr>`).join('')}</table></div>`;
+const dt=o=>o.createdAt?.toDate?o.createdAt.toDate().toLocaleString('en-PK'):'';
+const ol=`<button class="btn sm alt" onclick="loadOrders()">Refresh</button><div class="tbl"><table><tr><th>No.</th><th>Customer</th><th>Product</th><th>Total</th><th>Date</th><th>Status</th><th></th></tr>${AD.orders.map(o=>`<tr><td>${esc(o.orderNo||o.id)}</td><td><div><b>Customer name:</b></div><div>${esc(o.name||'—')}</div><div style="margin-top:6px"><b>Phone number:</b></div><div>${esc(o.phone||'—')}</div></td><td>${(o.items||[]).map(i=>`<img class="mini" src="${esc(i.img||P.find(p=>p.id==i.id)?.img||'')}" alt="">${esc(i.name)} ×${i.qty}`).join('<br>')}</td><td>${pkr(o.total||0)}</td><td>${esc(dt(o))}</td><td><select onchange="setStatus('${o.id}',this.value)">${['Pending','Confirmed','Shipped','Delivered','Cancelled'].map(x=>`<option ${x==o.status?'selected':''}>${x}</option>`).join('')}</select></td><td><details><summary>Details</summary><div style="line-height:1.7"><div><b>Customer name:</b></div><div>${esc(o.name||'—')}</div><div><b>Phone number:</b></div><div>${esc(o.phone||'—')}</div><div><b>House number:</b></div><div>${esc(o.house||'—')}</div><div><b>Street / Area:</b></div><div>${esc(o.street||'—')}</div><div><b>City:</b></div><div>${esc(o.city||'—')}</div><div><b>Postal code:</b></div><div>${esc(o.postal||'—')}</div><div><b>Complete address:</b></div><div style="white-space:pre-wrap;overflow-wrap:anywhere">${esc(o.address||'—')}</div>${o.email?`<div><b>Email:</b></div><div>${esc(o.email)}</div>`:'' }<div><b>Products:</b></div><div>${(o.items||[]).map(i=>`${esc(i.name)} ${i.color?'('+esc(i.color)+') ':''}${i.qty} × ${pkr(i.price)}`).join('<br>')}</div><div><b>Subtotal:</b> ${pkr(o.subtotal||0)}</div><div><b>Delivery fee:</b> ${pkr(o.delivery||0)}</div><div><b>Total:</b> ${pkr(o.total||0)}</div><div><b>Payment method:</b> ${esc(o.payment||'—')}</div></div></details></td></tr>`).join('')||'<tr><td colspan="7">No orders yet.</td></tr>'}</table></div>`;
+return `<div class="row"><h1 style="flex:3">Admin</h1><button class="btn sm alt" onclick="logout()">Logout</button></div><div class="tabs"><button class="btn sm ${AD.tab=='products'?'':'alt'}" onclick="AD.tab='products';route()">Products</button><button class="btn sm ${AD.tab=='orders'?'':'alt'}" onclick="AD.tab='orders';route();loadOrders(1)">Orders</button><button class="btn sm ${AD.tab=='chats'?'':'alt'}" onclick="AD.tab='chats';loadChats()">Chats</button></div>${AD.tab=='chats'?chatsView():AD.tab=='products'?pl:ol}`}};
+async function place(mode){const v=i=>$('#'+i).value.trim(),R={n:'Please enter your full name.',hn:'Please enter your house number.',st:'Please enter your street or area.',ct:'Please enter your city.',ad:'Please enter your complete delivery address.'},d={};['n','ph','hn','st','ct','ad','pc','em'].forEach(i=>d[i]=v(i));let bad=0;
+ const E=(i,m)=>{$('#e_'+i).textContent=m;if(m)bad++};for(const i in R)E(i,d[i]?(i=='ad'&&d[i].length<8?'Address looks too short.':''):R[i]);
+ E('ph',!d.ph?'Please enter your phone number.':/^(\+?92|0)?3\d{9}$/.test(d.ph.replace(/[\s-]/g,''))?'':'Enter a valid Pakistani mobile number, e.g. 03XXXXXXXXX.');
+ E('pc',d.pc&&!/^\d{5}$/.test(d.pc)?'Postal code should be 5 digits (or leave it empty).':'');E('em',d.em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.em)?'Enter a valid email (or leave it empty).':'');
+ if(bad){$('#err').textContent='Please fix the highlighted fields.';return}$('#err').textContent='';
+ const src=mode=='now'?NOW:cart,L=lines(src),t=totals(src);if(!L.length){$('#err').textContent='These items are no longer available.';return}
+ $('#go').disabled=true;$('#go').textContent='Placing…';
+ try{const o={name:d.n,phone:d.ph,house:d.hn,street:d.st,city:d.ct,address:d.ad,postal:d.pc,email:d.em,payment:'Cash on Delivery',items:L.map(({c,p})=>({id:p.id,name:p.name,img:/^https?:/.test(p.img)?p.img:'',color:c.color,qty:c.qty,price:eff(p)})),subtotal:t.sub,delivery:t.del,total:t.total};
+  const r=await DB.placeOrder(o);ls.set('pg_last',{...r,name:d.n,total:t.total});if(r.saved){if(mode=='now'){NOW=[];ls.set('pg_now',[])}else{cart=[];save()}}location.hash='#/confirm'}
+ catch(e){console.warn('Order submission failed:',e);$('#err').textContent=(e&&e.message)||'We could not save your order. Please try again.';$('#go').disabled=false;$('#go').textContent='Place Order (COD)'}}
+/* ===== ADMIN ACTIONS ===== */
+/* Turn Firebase error codes into clear, actionable messages */
+function authMsg(e){const c=e&&e.code||'';
+ if(c==='app/not-admin')return `Signed in as ${e.email}, but your Firestore rules do not list this account as admin. In Firebase Console → Firestore → Rules, set the admin UID to: ${e.uid}`;
+ if(['auth/invalid-credential','auth/wrong-password','auth/user-not-found','auth/invalid-login-credentials'].includes(c))return 'Incorrect email or password.';
+ if(c==='auth/invalid-email')return 'That email address is not valid.';
+ if(c==='auth/user-disabled')return 'This admin account has been disabled in Firebase.';
+ if(c==='auth/too-many-requests')return 'Too many attempts. Wait a few minutes, then try again.';
+ if(c==='auth/network-request-failed')return 'Network error. Check your internet connection and try again.';
+ if(c==='auth/operation-not-allowed')return 'Email/Password sign-in is not enabled. Firebase Console → Authentication → Sign-in method → enable Email/Password.';
+ return 'Login failed: '+(e&&e.message||'unknown error');}
+function fbMsg(e,what){const c=e&&e.code||'',m=e&&e.message||'';
+ if(c==='permission-denied')return AD.user?`Firestore rules are blocking this ${what}. You are signed in as ${AD.user.email}, but this account is not the admin in your rules. In Firebase Console → Firestore → Rules, set the admin UID to: ${AD.user.uid}`:`Firestore rules are blocking this ${what} because you are not signed in as admin. Log out and log in again.`;
+ if(c==='unauthenticated')return 'Your admin session has expired. Log out, log in again, then retry.';
+ if(c==='not-found')return 'This product no longer exists in the database. Refresh the page and try again.';
+ if(c==='invalid-argument')return 'Firebase rejected the data: '+m;
+ if(c==='resource-exhausted')return 'Firebase quota or size limit reached. Remove a picture or try again later.';
+ if(c==='unavailable'||c==='deadline-exceeded')return 'Cannot reach Firebase. Check your internet connection and try again.';
+ return `Could not ${what}: ${m||c||'unknown error'}`;}
+/* Admin check = can this signed-in user read the admin-only orders collection? (decided by your Firestore rules, never by this page) */
+async function checkAdmin(){try{await tmo(FB.getDocs(FB.query(FB.collection(FB.db,'orders'),FB.limit(1))),12000,'Could not reach Firebase to verify admin access. Check your internet connection.');return null}catch(e){return e}}
+async function login(){
+ if(AD.busy)return;
+ const pw=$('#ap')?.value||'',b=$('#lbtn');AD.err='';
+ if(!pw){AD.err='Enter your admin password.';route();return}
+ if(pw!==ADMIN_PASSWORD){AD.err='Incorrect admin password.';route();return}
+ AD.busy=true;if(b){b.disabled=true;b.textContent='Opening admin…'}
+ try{
+   if(!FB)await tmo(DB.init(),12000,'Could not connect to Firebase. Check your internet and try again.');
+   await DB.loadAuth();
+   /* Password-only UI; use anonymous Firebase auth for database requests if enabled in Firebase Console. */
+   if(!FB.auth.currentUser)await tmo(FB.signInAnon(FB.auth),12000,'Could not start a Firebase session. Enable Anonymous sign-in in Firebase Authentication.');
+   AD.ok=true;AD.user={uid:FB.auth.currentUser?.uid||'',email:''};
+ }catch(e){AD.ok=false;AD.user=null;AD.err='Could not verify the Firebase session. Admin access is locked. Check your connection and Firebase Authentication settings. '+(e&&e.message||'')}
+ AD.busy=false;route();
+ /* Show the panel immediately and fetch orders in the background. */
+ if(AD.ok)loadOrders(1);
+}
+function logout(){try{if(FB&&FB.auth)FB.signOut(FB.auth)}catch{}AD={user:null,ok:false,tab:'products',orders:[],form:null,busy:false,err:'',email:''};route()}
+async function loadOrders(q){
+ try{
+  if(!FB)await tmo(DB.init(),12000,'Could not initialize Firebase. Check your connection.');
+  const r=await tmo(FB.getDocs(FB.query(FB.collection(FB.db,'orders'),FB.orderBy('createdAt','desc'),FB.limit(100))),15000,'Loading orders timed out. Check your connection and refresh.');
+  AD.orders=r.docs.map(d=>({id:d.id,...d.data()}));
+ }catch(e){toast(fbMsg(e,'load orders'),6000)}
+ if(AD.ok&&!AD.form)route();
+}
+async function setStatus(id,st){try{await FB.updateDoc(FB.doc(FB.db,'orders',id),{status:st});toast('Status updated')}catch(e){toast(fbMsg(e,'update the order status'),6000);loadOrders()}}
+function editProd(id){const p=P.find(x=>x.id==id);AD.form={id,name:p.name,desc:p.desc,price:p.price||'',disc:p.disc||'',stock:p.stock,cat:p.cat,colors:p.colors.join(', '),badge:p.badge,images:[...p.images]};route();scrollTo(0,0)}
+function shrink(f){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const i=new Image();i.onerror=rej;i.onload=()=>{const k=Math.min(1,800/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};i.src=r.result};r.readAsDataURL(f)})}
+async function addImgs(fs){for(const f of fs){if(AD.form.images.length>=4){toast('Maximum 4 pictures');break}try{AD.form.images.push(await shrink(f))}catch{toast('Could not read that picture')}}route()}
+async function saveProd(){
+ const F=AD.form;if(!F||AD.busy)return;
+ const pe=m=>{const e=$('#perr');if(e)e.textContent=m},btn=$('#sbtn'),busy=b=>{AD.busy=b;if(btn){btn.disabled=b;btn.textContent=b?'Saving…':'Save'}},
+ price=+F.price||0,disc=+F.disc||0,stock=Math.max(0,Math.floor(+F.stock||0));
+ pe('');
+ if(!F.name.trim())return pe('Please enter a title.');
+ if(price<0||disc<0)return pe('Prices cannot be negative.');
+ if(disc&&(!price||disc>=price))return pe('Discount price must be lower than the price.');
+ busy(true);
+ try{
+  if(!FB)await tmo(DB.init(),12000,'Could not connect to Firebase. Check your internet and try again.');
+  /* writes only succeed when signed in with the admin's Firebase account (see firestore.rules) */
+  await DB.loadAuth();
+  if(!FB.auth.currentUser)throw{code:'unauthenticated'};
+  const id=F.id||(F.newId=F.newId||FB.doc(FB.collection(FB.db,'products')).id);
+  let note='';
+  /* pictures: try Storage briefly; if it is not set up or blocked, keep the compressed picture inside the product instead */
+  if(F.images.some(m=>m.startsWith('data:'))&&!FB.noStore)await tmo(DB.loadStorage(),8000,'x').catch(()=>{FB.noStore=true});
+  const imgs=await Promise.all(F.images.map(async(m,i)=>{
+   if(!m.startsWith('data:')||!FB.store||FB.noStore)return m;
+   try{const r=FB.ref(FB.store,`products/${id}/${Date.now()}-${i}.jpg`);await tmo(FB.uploadString(r,m,'data_url'),15000,'upload timeout');return await tmo(FB.getDownloadURL(r),8000,'url timeout')}
+   catch(ue){FB.noStore=true;note=ue&&(ue.code==='storage/unauthorized'||ue.code==='storage/unauthenticated')?'Pictures were saved inside the product because Storage rules blocked the upload (see storage.rules).':'Pictures were saved inside the product because Storage upload failed.';console.warn('Storage upload failed, keeping compressed picture inside the product',ue);return m}}));
+  if(!note&&imgs.some(m=>m.startsWith('data:'))&&F.images.some(m=>m.startsWith('data:')))note='Pictures were saved inside the product (Firebase Storage is not set up).';
+  if(imgs.join('').length>900000)throw new Error('Pictures are too large to store. Remove one picture and try again.');
+  const data={name:F.name.trim(),desc:(F.desc||'').trim(),price,disc,stock,cat:(F.cat||'').trim()||'Lamp',colors:(F.colors||'').split(',').map(x=>x.trim()).filter(Boolean),badge:F.badge||'',images:imgs};
+  const w=F.id?FB.updateDoc(FB.doc(FB.db,'products',id),{...data,updatedAt:FB.serverTimestamp()}):FB.setDoc(FB.doc(FB.db,'products',id),{...data,createdAt:FB.serverTimestamp()});
+  await tmo(w,15000,'The server did not answer in 15 seconds. Check your internet connection, then press Save again.');
+  const np=norm({id,...data}),k=P.findIndex(x=>x.id==id);if(k>=0)P[k]={...P[k],...np};else P.unshift(np);cacheP(P);
+  AD.form=null;busy(false);nav();route();toast('Saved ✓'+(note?' '+note:''),note?6000:2200);
+  DB.products().then(r=>{if(r){P=r;if(!AD.form&&(location.hash||'').startsWith('#/admin'))route()}});
+ }catch(e){busy(false);console.warn('Product save failed',e);pe(fbMsg(e,'save'))}
+}
+async function delProd(id){if(!confirm('Delete this lamp?'))return;try{if(!FB)throw new Error('Not connected to Firebase. Reload the page and try again.');await tmo(FB.deleteDoc(FB.doc(FB.db,'products',id)),15000,'The server did not answer in 15 seconds. Check your internet connection.');P=P.filter(x=>x.id!=id);cacheP(P);toast('Deleted')}catch(e){toast(fbMsg(e,'delete'),6000)}route()}
+function route(){const [,pg='home',arg]=(location.hash||'#/').split('/');const f=pages[pg||'home']||pages.home;$('#app').innerHTML=f(arg);
+ const q=$('#q');if(q){q.oninput=e=>{Q.q=e.target.value;const pos=e.target.selectionStart;route();const n=$('#q');n.focus();n.setSelectionRange(pos,pos)};$('#cat').onchange=e=>{Q.cat=e.target.value;route()};$('#sort').onchange=e=>{Q.sort=e.target.value;route()}}scrollTo(0,0)}
+let __pgLastRoute=(location.hash||'#/').split('/')[1]||'home';
+addEventListener('hashchange',()=>{
+ const __pgNextRoute=(location.hash||'#/').split('/')[1]||'home';
+ if(__pgNextRoute==='admin'&&__pgLastRoute!=='admin'){
+   AD.ok=false; AD.user=null; AD.form=null; AD.err='';
+ }
+ if(__pgLastRoute==='admin'&&__pgNextRoute!=='admin'){
+   AD.ok=false; AD.user=null; AD.form=null;
+ }
+ __pgLastRoute=__pgNextRoute;
+ route();
+});
+(async()=>{
+  /* show cached products instantly, then refresh from Firebase in the background */
+  const cached=ls.get('pg_pcache',null),have=Array.isArray(cached)&&cached.length;
+  if(have){P=cached.map(norm);nav();foot();route()}
+  else{$('#app').innerHTML='<section class="hero" style="display:block;text-align:center"><h1>Loading PandaGlow… 🐼</h1><p>Getting your cute lamps ready.</p><div style="height:8px;background:var(--beige);border-radius:99px;overflow:hidden"><div style="height:100%;width:45%;background:var(--accent);border-radius:99px;animation:loadbar 1.2s ease-in-out infinite alternate"></div></div></section>';nav();foot()}
+  try{if(cfgOK)await tmo(DB.init(),12000,'Firebase initialization timed out');else DB.mode='demo'}
+  catch(e){console.warn('Firebase initialization failed. Check internet, Firebase project setup, and serve this page over HTTPS.',e);FB=null}
+  if(FB){const r=await DB.products();if(r)P=r}
+  /* SECURITY FIX: a remembered Firebase session must never unlock the admin UI.
+     The admin must explicitly enter the password during each visit. */
+  const pg=(location.hash||'#/').split('/')[1]||'home',ae=document.activeElement,typing=ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName);
+  if(pg==='admin'){AD.ok=false;AD.user=null;AD.form=null;}
+  if(!have||(!AD.form&&!typing&&pg!=='checkout'))route();else nav();
+})();
+/* ===== ADMIN: customer chats with the AI assistant (Firestore 'chats', readable only by admin via rules) ===== */
+async function loadChats(q){try{const r=await tmo(FB.getDocs(FB.query(FB.collection(FB.db,'chats'),FB.orderBy('updatedAt','desc'),FB.limit(100))),12000,'Loading chats timed out.');AD.chats=r.docs.map(d=>({id:d.id,...d.data()}));AD.chatErr=''}catch(e){AD.chats=[];AD.chatErr=fbMsg(e,'load chats')}if(!q)route()}
+function chatsView(){const L=AD.chats||[],dt=c=>c.updatedAt?.toDate?c.updatedAt.toDate().toLocaleString('en-PK'):'';return `<button class="btn sm alt" onclick="loadChats()">Refresh</button>${AD.chatErr?`<p class="err">${esc(AD.chatErr)}</p>`:''}${L.length?L.map(c=>{const m=c.messages||[],f=m.find(x=>x.r==='u');return `<details class="card" style="margin:8px 0"><summary><b>${esc(dt(c)||'Chat')}</b> · ${m.length} messages · ${esc((f?f.x:'').slice(0,60))}</summary>${m.map(x=>`<p style="margin:6px 0;white-space:pre-wrap"><b>${x.r==='u'?'Customer':'Panda Helper'}</b> <small>${esc(x.t||'')}</small><br>${esc(x.x)}</p>`).join('')}</details>`}).join(''):(AD.chatErr?'':'<p>No chats yet.</p>')}`}
+/* ===== PandaGlow AI chatbot (additive module). Reuses existing globals: P, cart, wish, add, save, totals, lines, eff, ok, hasP, pkr, wishT, BRAND, route.
+   The AI key lives only on the server (/api/chat). The model can only PROPOSE allowlisted actions; this code validates them against real data and runs them after the customer confirms. ===== */
+(()=>{
+const API='/api/chat',MAXH=12,TIMEOUT=28000,MOBILE=()=>matchMedia('(max-width:600px)').matches;
+const S={open:false,busy:false,hist:[],last:[],ctl:null,rid:0,log:[],sid:'',rest:false,notice:false},KEY='pgc_state';
+const newSid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+try{const sv=JSON.parse(localStorage.getItem(KEY));if(sv&&sv.sid){S.sid=sv.sid;S.hist=sv.hist||[];S.last=sv.last||[];S.log=sv.log||[]}}catch{}
+if(!S.sid)S.sid=newSid();
+let ct=null;
+/* history survives reloads (this browser only); a text-only copy is saved to Firestore 'chats' so the admin can read it */
+function persist(){S.log=S.log.slice(-80);S.hist=S.hist.slice(-40);try{localStorage.setItem(KEY,JSON.stringify({sid:S.sid,hist:S.hist,last:S.last,log:S.log}))}catch{}clearTimeout(ct);ct=setTimeout(async()=>{try{if(!S.log.some(e=>e.r==='u'))return;if(!FB)await tmo(DB.init(),12000,'Firebase not ready');await DB.loadAuth();if(!FB.auth.currentUser)await tmo(FB.signInAnon(FB.auth),12000,'Could not start a Firebase session');const m=S.log.filter(e=>e.k==='m'&&(e.r==='u'||e.r==='b')).map(e=>({r:e.r,x:String(e.x).slice(0,600),t:e.t||''}));await tmo(FB.setDoc(FB.doc(FB.db,'chats',S.sid),{sid:S.sid,n:m.length,messages:m,updatedAt:FB.serverTimestamp()}),15000,'Chat save timed out')}catch(e){console.warn('Chat could not be saved to Firestore',e)}},1500)}
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const PANDA='<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="#4a2e22"/><circle cx="31" cy="9" r="6" fill="#4a2e22"/><ellipse cx="20" cy="22" rx="14" ry="13" fill="#fff"/><ellipse cx="14" cy="21" rx="3.4" ry="4.4" fill="#4a2e22" transform="rotate(20 14 21)"/><ellipse cx="26" cy="21" rx="3.4" ry="4.4" fill="#4a2e22" transform="rotate(-20 26 21)"/><circle cx="14.5" cy="21" r="1.2" fill="#fff"/><circle cx="25.5" cy="21" r="1.2" fill="#fff"/><ellipse cx="20" cy="27" rx="2.2" ry="1.5" fill="#4a2e22"/></svg>';
+const root=el('div');root.innerHTML=`<button class="pgc-fab" id="pgcFab" aria-label="Open PandaGlow shopping assistant" aria-expanded="false" aria-controls="pgcWin">${PANDA.replace('<svg','<svg width="40" height="40"')}</button>
+<div class="pgc-hint" id="pgcHint" role="status">Need help choosing a lamp? 🐼<button aria-label="Dismiss">×</button></div>
+<section class="pgc-win" id="pgcWin" role="dialog" aria-label="PandaGlow shopping assistant"><div class="pgc-head">${PANDA}<div><b>Panda Helper</b><small>AI shopping assistant</small></div><button id="pgcNew" aria-label="Restart conversation" title="Restart">↻</button><button id="pgcMin" aria-label="Minimize chat" title="Minimize">–</button><button id="pgcX" aria-label="Close chat" title="Close">✕</button></div>
+<div class="pgc-log" id="pgcLog" role="log" aria-live="polite" aria-label="Conversation"></div>
+<form class="pgc-form" id="pgcForm"><textarea id="pgcIn" rows="1" maxlength="500" placeholder="Ask about lamps, prices, delivery…" aria-label="Message"></textarea><button class="pgc-send" id="pgcSend" aria-label="Send message">➤</button></form>
+<div class="pgc-note">Chats are saved so the store can improve its help — please don't share phone numbers or addresses here. AI can make mistakes.</div></section>`;
+document.body.append(...root.children);
+const $g=i=>document.getElementById(i),fab=$g('pgcFab'),win=$g('pgcWin'),log=$g('pgcLog'),inp=$g('pgcIn'),sendB=$g('pgcSend'),hint=$g('pgcHint');
+const tm=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+const down=()=>{log.scrollTop=log.scrollHeight};
+function msg(role,text,at){const m=el('div','pgc-m '+role);m.append(text);m.dir='auto';const w=at||tm();m.append(el('time','',w));log.append(m);down();if(!S.rest){S.log.push({k:'m',r:role,x:String(text).slice(0,1500),t:w});persist()}return m}
+function typing(){const d=el('div','pgc-dots');d.setAttribute('aria-label','Assistant is typing');d.innerHTML='<i></i><i></i><i></i>';log.append(d);down();return d}
+function setUI(){sendB.disabled=S.busy;inp.setAttribute('aria-busy',S.busy)}
+function hideOnPage(){const pg=(location.hash||'#/').split('/')[1];const hide=(pg==='checkout'||pg==='admin')&&!S.open;fab.style.display=hide?'none':'';if(hide)hint.classList.remove('on')}
+function vv(){const h=(window.visualViewport&&visualViewport.height)||innerHeight;document.documentElement.style.setProperty('--pgc-vh',h+'px')}
+function openW(){S.open=true;win.classList.add('on');document.body.classList.add('pgc-open');fab.setAttribute('aria-expanded','true');hint.classList.remove('on');fab.style.display='';vv();if(!log.children.length)boot();setTimeout(()=>inp.focus(),50)}
+function hideW(abort){S.open=false;win.classList.remove('on');document.body.classList.remove('pgc-open');fab.setAttribute('aria-expanded','false');if(abort&&S.ctl){S.rid++;S.ctl.abort();S.busy=false;setUI();log.querySelectorAll('.pgc-dots').forEach(x=>x.remove())}hideOnPage();fab.focus()}
+function chips(){const c=el('div','pgc-chips');['Show me lamps','Cheapest lamp','Sasta lamp dikhao','How much is delivery?'].forEach(t=>{const b=el('button','',t);b.type='button';b.onclick=()=>{c.remove();send(t)};c.append(b)});log.append(c);down()}
+function welcome(){msg('b',"Hi! I'm Panda Helper 🐼 I can find lamps by budget or style, compare them, and help with your cart and delivery questions.");chips()}
+function boot(){if(!S.log.length)return welcome();const keep=S.last.slice();S.rest=true;S.log.forEach(e=>e.k==='c'?cards(e.ids):msg(e.r,e.x,e.t));S.rest=false;S.last=keep;if(!S.log.some(e=>e.r==='u'))chips();down()}
+function restart(){S.rid++;if(S.ctl)S.ctl.abort();S.busy=false;S.hist=[];S.last=[];S.log=[];S.sid=newSid();S.notice=false;log.innerHTML='';setUI();persist();welcome()}
+/* ---- data sent to the server: public storefront fields only ---- */
+const snapshot=()=>P.slice(0,80).map(p=>({id:String(p.id),name:String(p.name||'').slice(0,80),desc:String(p.desc||'').slice(0,200),price:hasP(p)?eff(p):null,was:hasP(p)&&p.disc&&p.disc<p.price?p.price:null,stock:+p.stock||0,cat:String(p.cat||''),colors:(p.colors||[]).slice(0,10).map(String),badge:p.badge||''}));
+/* ---- cards (prices come from the live catalog, never from the model) ---- */
+function cards(ids,label){const L=ids.map(i=>P.find(p=>String(p.id)===String(i))).filter(Boolean).slice(0,4);if(!L.length)return;if(label)msg('e',label);const w=el('div','pgc-cards');L.forEach(p=>{const c=el('div','pgc-c'),im=el('img');im.src=p.img;im.alt=p.name;im.loading='lazy';c.append(im,el('b','',p.name));const pr=el('span');if(hasP(p)){pr.append(el('b','',pkr(eff(p))));if(p.disc&&p.disc<p.price)pr.append(el('s','',pkr(p.price)))}else pr.append(el('small','','Price not set'));c.append(pr,el('small','',!hasP(p)?'Unavailable':p.stock>0?(p.stock<=5?'Only '+p.stock+' left':'In stock'):'Out of stock'));const r=el('div'),v=el('button','','View'),a=el('button','p','Add to cart');v.onclick=()=>{location.hash='#/p/'+p.id;if(MOBILE())hideW()};a.disabled=!ok(p);a.onclick=()=>{add(p.id);msg('b',cart.some(x=>x.id==p.id)?'Added "'+p.name+'" to your cart.':'Sorry, that lamp could not be added.')};r.append(v,a);c.append(r);w.append(c)});log.append(w);down();S.last=L.map(p=>String(p.id));if(!S.rest){S.log.push({k:'c',ids:S.last});persist()}}
+/* ---- allowlisted actions: validate, confirm, then call the site's own functions ---- */
+function confirmBox(text,run){const b=el('div','pgc-act'),y=el('button','','Confirm'),n=el('button','','Cancel');y.type=n.type='button';b.append(el('p','',text),y,n);const done=()=>{y.disabled=n.disabled=true};y.onclick=()=>{done();try{run()}catch(e){msg('e','That action could not be completed.')}};n.onclick=()=>{done();msg('b','Okay, I cancelled that.')};log.append(b);down()}
+const prod=id=>P.find(p=>String(p.id)===String(id)),qn=(v,max)=>Math.max(0,Math.min(max,parseInt(v,10)||0));
+function cartSummary(){const L=lines(cart);if(!L.length)return 'Your cart is empty.';const t=totals(),F=BRAND.delivery;return L.map(({c,p})=>'• '+p.name+(c.color?' ('+c.color+')':'')+' × '+c.qty+' — '+pkr(eff(p)*c.qty)).join('\n')+'\n\nSubtotal: '+pkr(t.sub)+'\nDelivery: '+(t.del?pkr(t.del):'Free')+'\nTotal: '+pkr(t.total)+(t.del?'\nSpend '+pkr(F.freeOver-t.sub)+' more for free delivery.':'')}
+function act(a){const p=a.id!=null?prod(a.id):null;switch(a.type){
+case 'view_cart':msg('b',cartSummary());break;
+case 'add_to_cart':{if(!p||!ok(p))return msg('e','That lamp is not available right now, so I did not add it.');const q=qn(a.qty||1,p.stock)||1,col=(p.colors||[]).includes(a.color)?a.color:(p.colors&&p.colors[0])||'';confirmBox('Add '+q+' × '+p.name+(col?' ('+col+')':'')+' to your cart for '+pkr(eff(p)*q)+'?',()=>{add(p.id,col,q);msg('b',cart.some(c=>c.id==p.id)?'Done — it is in your cart. Subtotal: '+pkr(totals().sub)+'.':'That could not be added.')});break}
+case 'update_cart':{const it=cart.find(c=>String(c.id)===String(a.id)&&(!a.color||c.color==a.color));if(!it||!p)return msg('e','I could not find that item in your cart.');const q=qn(a.qty,p.stock);confirmBox(q?'Change '+p.name+' to quantity '+q+'?':'Remove '+p.name+' from your cart?',()=>{const i=cart.indexOf(it);if(i<0)return msg('e','That item is no longer in your cart.');if(q)it.qty=q;else cart.splice(i,1);save();if((location.hash||'').startsWith('#/cart'))route();msg('b',q?'Updated.':'Removed.')+'';msg('b',cartSummary())});break}
+case 'wishlist':{if(!p)return msg('e','I could not find that lamp.');const want=a.op==='remove'?false:true;if(wish.includes(p.id)===want)return msg('b',want?'It is already in your wishlist.':'It is not in your wishlist.');confirmBox((want?'Add ':'Remove ')+p.name+(want?' to':' from')+' your wishlist?',()=>{wishT(p.id);msg('b',wish.includes(p.id)===want?'Done.':'That could not be updated.')});break}
+case 'go_to_checkout':{if(!lines(cart).length)return msg('b','Your cart is empty, so there is nothing to check out yet.');confirmBox('Go to checkout? You will review the details and place the order yourself.',()=>{location.hash='#/checkout';if(MOBILE())hideW()});break}}}
+/* ---- request / response ---- */
+function handle(d){if(d.reply)msg('b',d.reply);const ids=Array.isArray(d.show)?d.show:[];let note=d.reply||'';if(ids.length){cards(ids);note+=' [showed products: '+S.last.join(', ')+']'}S.hist.push({role:'assistant',content:note.slice(0,1500)||'(no text)'});persist();(Array.isArray(d.actions)?d.actions:[]).slice(0,3).forEach(act)}
+const ORD=[[/\b(first|1st|pehl[ai])\b/,0],[/\b(second|2nd|dos?ra|doosra)\b/,1],[/\b(third|3rd|tees?ra)\b/,2],[/\b(fourth|4th|chautha)\b/,3]];
+const STOP=new Set('lamp lamps show me the a an i need want to dikhao dikhain mujhe do de and for under below please have you any some what is are in of my with ye wo hai kya mein se tak rupees rupay rs pkr products product items best cheapest cheap sasta sasti less than budget give list all'.split(' '));
+/* basic mode: answers from the real catalog when the AI service is not reachable */
+function local(q){const s=q.toLowerCase(),F=BRAND.delivery,av=P.filter(ok),ur=/[\u0600-\u06ff]/.test(q),R=(reply,show,actions)=>({reply,show:show||[],actions:actions||[]});
+const nm=s.match(/(\d[\d,]*)/),cap=nm&&+nm[1].replace(/,/g,'')>=50?+nm[1].replace(/,/g,''):0,nameOf=id=>{const p=prod(id);return p?p.name:''};
+if(/^(hi|hello|hey|salam|assalam\S*|aoa)\b/.test(s)&&s.length<25)return R('Hello! 🐼 Tell me what you are looking for — for example "lamps under 2000" or "cheapest lamp".');
+if(/deliver|shipping|ڈیلیوری|charges/.test(s))return R('Delivery costs '+pkr(F.fee)+'. It is free when your subtotal is '+pkr(F.freeOver)+' or more. Payment is Cash on Delivery.');
+if(/(how|kaise|kese|kaisay).*(order|buy|khareed)|(order|buy).*(how|kaise|kese)/.test(s))return R('1) Open a lamp and tap Add to Cart (or Order Now to buy just that lamp).\n2) Open your cart and check quantities.\n3) Tap checkout and fill in your name, phone and address.\n4) Place the order — you pay Cash on Delivery.');
+if(/\b(add|dalo|daal)\b/.test(s)&&!/how|kaise/.test(s)){const o=ORD.find(x=>x[0].test(s)),id=o?S.last[o[1]]:(S.last.length===1?S.last[0]:null);if(id)return R('Okay, I can add that for you:',[],[{type:'add_to_cart',id,qty:1}]);return R(S.last.length?'Which one? Say "first", "second" or "third".':'Tell me which lamp you want, or ask me to show lamps first.')}
+if(/\bcart\b|کارٹ/.test(s))return R('Here is your cart:',[],[{type:'view_cart'}]);
+if(/checkout/.test(s))return R('Ready when you are:',[],[{type:'go_to_checkout'}]);
+if(S.last.length>1&&/which|konsa|kaun|compare|difference|better/.test(s))return R('I can only compare facts I have — price and stock:\n'+S.last.map((id,i)=>{const p=prod(id);return p?(i+1)+'. '+p.name+' — '+pkr(eff(p))+(p.stock<=5?' (only '+p.stock+' left)':''):''}).join('\n'),S.last);
+if(!av.length)return R('No lamps are available right now. Please check back soon 🐼');
+const words=s.split(/[^a-z\u0600-\u06ff]+/).filter(w=>w.length>2&&!STOP.has(w)),cheap=/cheap|sasta|sasti|سستا|lowest|kam price/.test(s);
+let L=av;if(cap)L=L.filter(p=>eff(p)<=cap);let hit=words.length?L.filter(p=>words.some(w=>(p.name+' '+p.desc+' '+p.cat+' '+(p.colors||[]).join(' ')).toLowerCase().includes(w))):[];if(hit.length)L=hit;
+if(cap&&!L.length){const n=av.slice().sort((a,b)=>eff(a)-eff(b)).slice(0,3);return R('I do not have a lamp under '+pkr(cap)+'. The lowest-priced ones available are above that budget:',n.map(p=>p.id))}
+L=L.slice().sort((a,b)=>cheap||cap?eff(a)-eff(b):(b.badge==='best')-(a.badge==='best')||eff(a)-eff(b));const sh=L.slice(0,4),lo=eff(sh[0]),hi=Math.max(...sh.map(eff));
+const rep=cheap?'The cheapest available lamp is '+sh[0].name+' at '+pkr(lo)+'.':ur?'یہ رہے آپ کے لیے لیمپ:':'Here '+(sh.length>1?'are '+sh.length+' lamps':'is a lamp')+(cap?' under '+pkr(cap):'')+(sh.length>1?' ('+pkr(lo)+' – '+pkr(hi)+')':'')+(hit.length||!words.length?'':' (I could not match your exact words, so these are popular picks)')+':';
+return R(rep,cheap?sh.slice(0,1).map(p=>p.id).concat(sh.slice(1).map(p=>p.id)):sh.map(p=>p.id))}
+function offline(){const last=[...S.hist].reverse().find(x=>x.role==='user');if(!S.notice){S.notice=true;msg('e','Basic mode: the AI service is not connected right now, so I am answering from the store catalog. Your cart was not changed.')}handle(local(last?last.content:''))}
+async function ask(){if(S.busy)return;S.busy=true;setUI();const rid=++S.rid,ty=typing(),ctl=S.ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),TIMEOUT);
+try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},signal:ctl.signal,body:JSON.stringify({messages:S.hist.slice(-MAXH),catalog:snapshot(),lastShown:S.last,cart:cart.map(c=>({id:String(c.id),color:c.color,qty:c.qty})),wishlist:wish.map(String),delivery:BRAND.delivery})});if(rid!==S.rid)return;const d=await r.json().catch(()=>null);if(!r.ok||!d||typeof d.reply!=='string')throw new Error('unavailable');ty.remove();handle(d)}
+catch(e){if(rid!==S.rid)return;ty.remove();offline()}
+finally{clearTimeout(t);if(rid===S.rid){S.busy=false;setUI();if(S.open)inp.focus()}}}
+function send(text){text=String(text||'').trim().slice(0,500);if(!text||S.busy)return;msg('u',text);S.hist.push({role:'user',content:text});persist();ask()}
+$g('pgcForm').onsubmit=e=>{e.preventDefault();const v=inp.value;inp.value='';inp.style.height='auto';send(v)};
+inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$g('pgcForm').requestSubmit()}};
+inp.oninput=()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,110)+'px'};
+win.onkeydown=e=>{if(e.key==='Escape')hideW(false)};
+fab.onclick=()=>S.open?hideW(false):openW();$g('pgcMin').onclick=()=>hideW(false);$g('pgcX').onclick=()=>hideW(true);$g('pgcNew').onclick=restart;hint.querySelector('button').onclick=()=>{hint.classList.remove('on');try{sessionStorage.setItem('pgc_hint','1')}catch{}};
+if(window.visualViewport)visualViewport.addEventListener('resize',()=>{vv();down()});addEventListener('hashchange',hideOnPage);hideOnPage();
+try{if(!sessionStorage.getItem('pgc_hint'))setTimeout(()=>{if(!S.open&&fab.style.display!=='none'){hint.classList.add('on');setTimeout(()=>hint.classList.remove('on'),9000);sessionStorage.setItem('pgc_hint','1')}},5000)}catch{}
+})();
+</script></body></html>
